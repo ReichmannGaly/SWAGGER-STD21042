@@ -1,0 +1,190 @@
+openapi: 3.0.1
+info:
+  title: STD21042 API
+  description: 'Global description of my API'
+  version: 1.0.0
+servers:
+ - url: https://STD21042.com
+tags: 
+ - name: Students
+   
+ - name: Courses
+paths:
+ /students:
+    get:
+      tags:
+        - Students
+      operationId: getStudents
+      summary: Get all students
+      description: Get all students with details
+      responses:
+        200: 
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Student'
+        400:
+          description: Bad request
+    post: 
+      tags:
+        - Students
+      operationId: createStudent
+      summary : Create new student
+      description: Create new student
+      requestBody:
+        description: Student to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStudent'
+        required: true
+      responses:
+        200:
+          description: List of students
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        400:
+          description: Bad request  
+ /courses:
+    get:
+      tags:
+        - Courses
+      operationId: getCourse
+      summary: Get all courses
+      description: Get all courses with details
+      parameters: 
+      - name: page
+        in : query
+        description: page
+        required: true
+        schema:
+          type: integer
+      - name: page size
+        in : query
+        description: page size
+        required: true
+        schema:
+          type: integer
+      responses:
+        200: 
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Course'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    post: 
+      tags:
+        - Courses
+      operationId: createCourse
+      summary : Create new course
+      description: Create new course
+      requestBody:
+        description: Course to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      responses:
+        200:
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseId'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+ /courses/{id}:
+    get:
+      tags:
+        - Courses
+      operationId: getCourse/{id}
+      summary: Get a specified Course
+      description: Get a specified course with details
+      parameters: 
+      - name: id
+        in : path
+        description: id of the course to return
+        required: true
+        schema:
+          type: integer
+      responses:
+        200: 
+          description: Get a specified course
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Course'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+components:
+  schemas:
+    CreateStudent:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Rakoto"
+        birth_date:
+          type: string
+          format: date
+          example: "2022-01-01"
+    Student:
+      allOf:
+        - $ref: '#/components/schemas/CreateStudent'
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+    Course:    
+      type: object
+      properties:
+        name:
+          type: string
+          example: "EL1"
+        teacher:
+          type: string
+          example: "RAKOTO"
+        createDatetime: 
+          type: string
+          format: date
+          example: "2021-11-08"
+    CourseId:
+      allOf: 
+        - $ref: '#/components/schemas/Course'
+      type: object
+      properties: 
+        id:
+          type: integer
+          example: 10
+    BadRequest: 
+      type: object
+      properties:
+        code: 
+          example: 400_BAD_REQUEST
+        message: 
+          example: Parameters are missing
