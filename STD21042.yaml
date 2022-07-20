@@ -1,16 +1,17 @@
 openapi: 3.0.1
 info:
   title: STD21042 API
-  description: 'Global description of my API'
-  version: 1.0.0
+  description: Global description of my API
+  version: 1.0.0-oas3
 servers:
- - url: https://STD21042.com
-tags: 
- - name: Students
-   
- - name: Courses
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ReichmannGaly/STD21042/1.0.0
+  - url: https://STD21042.com
+tags:
+  - name: Students
+  - name: Courses
 paths:
- /students:
+  /students:
     get:
       tags:
         - Students
@@ -18,21 +19,21 @@ paths:
       summary: Get all students
       description: Get all students with details
       responses:
-        200: 
+        '200':
           description: List of students
           content:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Student'
-        400:
+        '400':
           description: Bad request
-    post: 
+    post:
       tags:
         - Students
       operationId: createStudent
-      summary : Create new student
+      summary: Create new student
       description: Create new student
       requestBody:
         description: Student to be created
@@ -42,54 +43,134 @@ paths:
               $ref: '#/components/schemas/CreateStudent'
         required: true
       responses:
-        200:
+        '200':
           description: List of students
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Student'
-        400:
-          description: Bad request  
- /courses:
+        '400':
+          description: Bad request
+  /students/{id}:
+    get:
+      tags:
+        - Students
+      operationId: getStudent{id}
+      summary: Get a student
+      description: Get a student by identifier
+      parameters:
+        - name: id
+          in: path
+          description: The identified student
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Specified student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    put:
+      tags: 
+        - Students
+      operationId: putStudent{id}
+      summary: Update a student
+      description: update a specified student
+      parameters: 
+        - name: id
+          in: path
+          description: id of the student to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Student to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+        required: true
+      responses:
+        '200': 
+          description: Update success
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Bad request
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequest'
+    delete:
+      tags: 
+        - Students
+      operationId: deleteStudent/{id}
+      summary: Delete a student
+      description: Delete a specified student 
+      parameters: 
+        - name: id
+          in: path
+          description: id of the student to delete
+          required: true
+          schema: 
+            type: integer
+      responses: 
+        '200':
+          description: Student deleted successfully
+        '400': 
+          description: Parameter id is missing
+        '404':
+          description: Student not found
+  /courses:
     get:
       tags:
         - Courses
       operationId: getCourse
       summary: Get all courses
       description: Get all courses with details
-      parameters: 
-      - name: page
-        in : query
-        description: page
-        required: true
-        schema:
-          type: integer
-      - name: page size
-        in : query
-        description: page size
-        required: true
-        schema:
-          type: integer
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: true
+          schema:
+            type: integer
+        - name: page size
+          in: query
+          description: page size
+          required: true
+          schema:
+            type: integer
       responses:
-        200: 
+        '200':
           description: List of courses
           content:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Course'
-        400:
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequest'
-    post: 
+    post:
       tags:
         - Courses
       operationId: createCourse
-      summary : Create new course
+      summary: Create new course
       description: Create new course
       requestBody:
         description: Course to be created
@@ -99,42 +180,40 @@ paths:
               $ref: '#/components/schemas/Course'
         required: true
       responses:
-        200:
-          description: List of courses
+        '200':
+          description: The created course
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseId'
-        400:
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequest'
- /courses/{id}:
+  /courses/{id}:
     get:
       tags:
         - Courses
       operationId: getCourse/{id}
-      summary: Get a specified Course
-      description: Get a specified course with details
-      parameters: 
-      - name: id
-        in : path
-        description: id of the course to return
-        required: true
-        schema:
-          type: integer
+      summary: Get a course
+      description: Get a course by identifier
+      parameters:
+        - name: id
+          in: path
+          description: id of the course to return
+          required: true
+          schema:
+            type: integer
       responses:
-        200: 
+        '200':
           description: Get a specified course
           content:
             application/json:
               schema:
-                type: array
-                items: 
-                  $ref: '#/components/schemas/Course'
-        400:
+                $ref: '#/components/schemas/Course'
+        '400':
           description: Bad Request
           content:
             application/json:
@@ -147,11 +226,11 @@ components:
       properties:
         name:
           type: string
-          example: "Rakoto"
+          example: Rakoto
         birth_date:
           type: string
           format: date
-          example: "2022-01-01"
+          example: '2022-01-01'
     Student:
       allOf:
         - $ref: '#/components/schemas/CreateStudent'
@@ -160,31 +239,31 @@ components:
         id:
           type: integer
           example: 10
-    Course:    
+    Course:
       type: object
       properties:
         name:
           type: string
-          example: "EL1"
+          example: EL1
         teacher:
           type: string
-          example: "RAKOTO"
-        createDatetime: 
+          example: RAKOTO
+        createDatetime:
           type: string
           format: date
-          example: "2021-11-08"
+          example: '2021-11-08'
     CourseId:
-      allOf: 
+      allOf:
         - $ref: '#/components/schemas/Course'
       type: object
-      properties: 
+      properties:
         id:
           type: integer
           example: 10
-    BadRequest: 
+    BadRequest:
       type: object
       properties:
-        code: 
+        code:
           example: 400_BAD_REQUEST
-        message: 
+        message:
           example: Parameters are missing
