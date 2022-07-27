@@ -1,0 +1,356 @@
+openapi: 3.0.1
+info:
+  title: STD21042-TD2 API
+  description: API of a cinema management
+  version: 1.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ReichmannGaly/SDT21042-TD2/1.0.0
+  - url: https://STD21042.com
+tags:
+  - name: Rooms
+  - name: Movies
+  - name: Projection
+paths:
+  /rooms: 
+    get:
+      tags:
+        - Rooms
+      operationId: getRooms
+      summary: Get all rooms
+      description: Get the list of all rooms
+      responses: 
+        '200': 
+          description: List of all rooms
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+        '400':
+          description: Bad request
+  /room/{id}:
+    get: 
+      tags: 
+        - Rooms
+      operationId: getRoom/{id}
+      summary: Get a room
+      description: Get a specified room
+      parameters: 
+        - name: id
+          in: path
+          description: The identified room
+          required: true
+          schema: 
+            type: string
+            
+      responses:
+        '200':
+          description: Specified room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    patch:
+      tags:
+        - Rooms
+      summary: update a specified room
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            examples:
+              changeCapacity:
+                value:
+                  capacity: 200
+      responses: 
+        '200':
+          description: Update success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+  /movies:
+    get:
+      tags:
+        - Movies
+      operationId: getMovies
+      summary: Get all movies
+      description: Get the list of all movies
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '400':
+          description: Bad request
+    post:
+      tags:
+        - Movies
+      operationId: createMoviet
+      summary: Create new movie
+      description: Create new movie
+      requestBody:
+        description: Movie to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMovie'
+        required: true
+      responses:
+        '200':
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '400':
+          description: Bad request
+  /movies/{id}:
+    get:
+      tags:
+        - Movies
+      operationId: getMovie{id}
+      summary: Get a movie
+      description: Get a movie by identifier
+      parameters:
+        - name: id
+          in: path
+          description: The identified movie
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Specified movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    put:
+      tags: 
+        - Movies
+      operationId: putMovie{id}
+      summary: Update a movie
+      description: update a specified movie
+      parameters: 
+        - name: id
+          in: path
+          description: id of the movie to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Movie to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+        required: true
+      responses:
+        '200': 
+          description: Update success
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Movie'
+        '400':
+          description: Bad request
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequest'
+    patch:
+      tags: 
+        - Movies
+      operationId: patchMovies/{id}
+      summary: Update movie values
+      description:  |
+       Choose between those parameters
+        - title
+        - duration
+        - summary
+        - producer
+        - release_date
+      parameters: 
+        - name: id
+          in: path 
+          schema: 
+            type: integer
+          required: true
+      requestBody: 
+        content: 
+          application/json:
+            schema:
+              type: object
+            examples: 
+              changeTitle: 
+                value:
+                  title: "string"
+              changeSummary:
+                value:
+                  summary: "string"
+              changeProducer:
+                value:
+                  producer: "string"
+      responses:
+        '200':
+          description: Patch success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '400':
+          description: Bad request
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequest'
+    delete:
+      tags: 
+        - Movies
+      operationId: deleteMovie/{id}
+      summary: Delete a movie
+      description: Delete a specified movie
+      parameters: 
+        - name: id
+          in: path
+          description: id of the movie to delete
+          required: true
+          schema: 
+            type: integer
+      responses: 
+        '200':
+          description: Movie deleted successfully
+        '400': 
+          description: Parameter id is missing
+        '404':
+          description: Movie not found
+  /projections:
+    get:
+      tags: 
+        - Projection
+      operationId: getProjections
+      summary: Get all projections
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all Projections
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Projection'
+        '400':
+          description: Bad request
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequest'
+components:
+  schemas:
+    CreateMovie:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Avengers Endgame
+        duration:
+          type: string
+          example: 100 min
+        summary:
+          type: string
+          example: Avengers need to find a way to beat Thanos
+        producer: 
+          type: string
+          example: Anthony Russo
+        release_date:
+          type: string
+          format: date
+          example: '2022-01-01'
+    Movie:
+      allOf:
+        - $ref: '#/components/schemas/CreateMovie'
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+          enum: 
+            - A
+            - B
+        capacity:
+          type: integer
+          example: 100
+    BadRequest:
+      type: object
+      properties:
+        code:
+          example: 400_BAD_REQUEST
+        message:
+          example: Parameters are missing
+    Projection:
+      allOf:
+        - $ref: '#/components/schemas/Movie'
+        - $ref: '#/components/schemas/Room'
+      type: object
+      properties:
+        projection_id:
+          type: number
+          example: 1
+        broadcast_time:
+          type: string
